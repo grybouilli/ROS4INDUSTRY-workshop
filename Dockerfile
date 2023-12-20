@@ -18,7 +18,24 @@ WORKDIR /
 RUN echo "cd /catkin_ws && catkin_make" >> /root/.bashrc
 RUN echo source /catkin_ws/devel/setup.bash >> /root/.bashrc
 
-FROM gryboupop3 as grybouros
+FROM gryboupop3 as grybouturtle
+RUN apt install ros-noetic-joy ros-noetic-teleop-twist-joy \
+  ros-noetic-teleop-twist-keyboard ros-noetic-laser-proc \
+  ros-noetic-rgbd-launch ros-noetic-rosserial-arduino \
+  ros-noetic-rosserial-python ros-noetic-rosserial-client \
+  ros-noetic-rosserial-msgs ros-noetic-amcl ros-noetic-map-server \
+  ros-noetic-move-base ros-noetic-urdf ros-noetic-xacro \
+  ros-noetic-compressed-image-transport ros-noetic-rqt-image-view \
+  ros-noetic-gmapping ros-noetic-navigation ros-noetic-interactive-markers -y
+
+FROM grybouturtle as grybouturtle2
+WORKDIR /catkin_ws/src
+RUN git clone https://github.com/ros4pro/turtlebot3
+RUN git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+# RUN git clone https://github.com/ros4pro/ros4pro.git
+
+FROM grybouturtle2 as grybouros
+WORKDIR /
 RUN echo ulimit -n 65536 >> ./root/.bashrc
 EXPOSE 8665
 ENV DISPLAY :0
